@@ -24,14 +24,13 @@ export async function POST(req) {
         messages: [
             { role: "user", content: FINAL_PROMPT }
             ],
+
     })
-        console.log(completion.choices[0].message)
+        // console.log(completion.choices[0].message)
         return NextResponse.json(completion.choices[0].message)
-}
-catch(e)
-{
-    console.log(e)
-    return NextResponse.json(e)
-    
-}
+    }
+    catch (e) {
+        console.log(e)
+        return NextResponse.json(e)
+    }
 }
