@@ -98,7 +98,7 @@ function StartInterview() {
 
   vapi.on("call-end", () => {
     console.log("Call has ended.");
-    toast('Interview Ended');
+    toast('Interview Ended... Please Wait...');
     GenerateFeedback();
   });
 
@@ -106,6 +106,49 @@ function StartInterview() {
     console.log(message?.conversation);
     setConversation(message?.conversation);
   });
+
+  useEffect(() => {
+    const handleMessage = (message) => {
+      console.log('Message: ', message);
+      if (message?.conversation) {
+        const convoString = JSON.stringify(message.conversation);
+        console.log('Conversation string:', convoString);
+        setConversation(convoString);
+      }
+    };
+
+    vapi.on("message", handleMessage);
+
+    vapi.on("call-start", () => {
+    console.log("Call has started.");
+    toast('Call conected...')
+  });
+
+    vapi.on("speech-start", () => {
+    console.log("Assistant speech has started.");
+    setActiveUser(false);
+  });
+
+    vapi.on("speech-end", () => {
+    console.log("Assistant speech has ended.");
+    setActiveUser(true);
+  });
+
+    vapi.on("call-end", () => {
+    console.log("Call has ended.");
+    toast('Interview Ended... Please Wait...');
+    GenerateFeedback();
+  });
+
+    // Clean up  the listener
+    return () => {
+      vapi.off("message", handleMessage);
+      vapi.off('call-start', () => console.log("END"));
+      vapi.off('speech-start', () => console.log("END"));
+      vapi.off('speech-end', () => console.log("END"));
+      vapi.off('call-end', () => console.log("END"));
+    };
+  }, []);
 
   const GenerateFeedback = async () => {
     const result = await axios.post('/api/ai-feedback', {
