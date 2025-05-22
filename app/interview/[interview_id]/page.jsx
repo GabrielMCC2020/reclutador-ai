@@ -1,12 +1,12 @@
 "use client"
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { InterviewDataContext } from '@/context/InterviewDataContext'
 import { supabase } from '@/services/supabaseClient'
-import { Clock, Info, Video } from 'lucide-react'
-import { Inter } from 'next/font/google'
+import { Clock, Info, Loader2Icon, Video } from 'lucide-react'
 import Image from 'next/image'
-import { useParams } from 'next/navigation'
-import React, { use, useEffect, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import React, { useContext, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 function Interview() {
@@ -16,6 +16,9 @@ function Interview() {
     const [interviewData, setInterviewData] = useState();
     const [userName, setUserName] = useState();
     const [loading, setLoading] = useState(false);
+    const {interviewInfo, setInterviewInfo} = useContext(InterviewDataContext);
+    const router = useRouter();
+    
     useEffect(() => {
         interview_id && GetInterviewDetails();
     },[interview_id])
@@ -40,6 +43,23 @@ function Interview() {
             setLoading(false);
             toast('Incorrect Interview Link')
         }
+    }
+
+    const onJoinInterview = async () => {
+        setLoading(true);
+        let { data: Interviews, error } = await supabase
+            .from('Interviews')
+            .select('*')
+            .eq('interview_id', interview_id);
+
+        console.log(Interviews[0]);
+        setInterviewInfo({
+            userName: userName,
+            interviewData: Interview[0]
+        });
+        router.push('/interview/' + interview_id + '/start')
+        setLoading(false);
+        
     }
 
     return (
@@ -80,9 +100,10 @@ function Interview() {
 
                 <Button className={'mt-5 w-full font-bold'} 
                     disabled={loading || !userName}
+                    onClick={()=>onJoinInterview()}
                 > 
 
-                    <Video /> Join Interview </Button>
+                    <Video /> {loading && <Loader2Icon />} Join Interview </Button>
             </div>
         </div>
     )
