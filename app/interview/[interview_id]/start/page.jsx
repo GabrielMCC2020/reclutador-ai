@@ -1,16 +1,23 @@
 "use client"
 import { InterviewDataContext } from '@/context/InterviewDataContext';
-import { Mic, Phone, Timer } from 'lucide-react';
+import { Loader2, Loader2Icon, Mic, Phone, Timer, User } from 'lucide-react';
 import Image from 'next/image';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { use, useContext, useEffect, useState } from 'react'
 import Vapi from "@vapi-ai/web";
 import AlertConfirmation from './_components/AlertConfirmation';
 import { toast } from 'sonner';
+import TimerComponent from './_components/TimerComponent';
+import { supabase } from '@/services/supabaseClient';
+import { useParams, useRouter } from 'next/navigation';
 
 function StartInterview() {
   const {interviewInfo, setInterviewInfo} = useContext(InterviewDataContext);
   const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY);
   const [activeUser, setActiveUser] = useState(false);
+  const [conversation, setConversation] = useState();
+  const { interview_id } = useParams();
+  const router = useRouter();
+  const [loading, setLoading] = useState();
 
   useEffect( () => {
     interviewInfo && startCall();
@@ -91,15 +98,50 @@ function StartInterview() {
 
   vapi.on("call-end", () => {
     console.log("Call has ended.");
-    toast('Interview Ended') 
+    toast('Interview Ended');
+    GenerateFeedback();
   });
+
+  vapi.on("message", (message) => {
+    console.log(message?.conversation);
+    setConversation(message?.conversation);
+  });
+
+  const GenerateFeedback = async () => {
+    const result = await axios.post('/api/ai-feedback', {
+      conversation: conversation
+    });
+
+    console.log(result?.data);
+    const Content = result.data.content;
+    const FINAL_CONTENT = Content.replace('```json', '').replace('```', '')
+    console.log(FINAL_CONTENT);    
+    // Save to Database
+
+    const { data, error } = await supabase
+      .from('interview-feedback')
+      .insert([
+        {
+          userName: interviewInfo?.userName,
+          UserEmail: interviewInfo?.userEmail,
+          interview_id: interview_id,
+          feedback: JSON.parse(FINAL_CONTENT),
+          recommended: false
+        },
+      ])
+      .select();
+        console.log(data);
+        router.replace('/interview/' + interview_id + "/completed");
+        setLoading(false);
+  }
 
   return (
     <div className='p-20 lg:px-48 xl:px-56'>
       <h2 className='font-bold text-xl flex justify-between'>AI Interview Session
         <span className='flex gap-2 items-center'>
           <Timer />
-          00:00:00
+          {/* 00:00:00 */}
+          <TimerComponent start={true} />
         </span>
       </h2>
 
@@ -127,9 +169,12 @@ function StartInterview() {
 
       <div className='flex items-center gap-5 justify-center mt-7'>
         <Mic className='h-12 w-12 p-3 bg-gray-500 text-white rounded-full cursor-pointer'/>
-        <AlertConfirmation stopInterview={() => stopInterview()}>
-          <Phone className='h-12 w-12 p-3 bg-red-500 text-white rounded-full cursor-pointer'/>
-        </AlertConfirmation>
+        {/* <AlertConfirmation stopInterview={() => stopInterview()}> */}
+          {!loading ? <Phone className='h-12 w-12 p-3 bg-red-500 text-white rounded-full cursor-pointer'
+            onClick={() => stopInterview()}
+          /> : <Loader2Icon className='animate-spin' />}
+        {/* </AlertConfirmation> */}
+        
       </div>
         <h2 className='text-sm text-gray-400 text-center mt-5'>Interview in Progress...</h2>
     </div>

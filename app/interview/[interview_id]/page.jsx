@@ -15,6 +15,7 @@ function Interview() {
     console.log(interview_id)
     const [interviewData, setInterviewData] = useState();
     const [userName, setUserName] = useState();
+    const [userEmail, setUserEmail] = useState();
     const [loading, setLoading] = useState(false);
     const {interviewInfo, setInterviewInfo} = useContext(InterviewDataContext);
     const router = useRouter();
@@ -55,6 +56,7 @@ function Interview() {
         console.log(Interviews[0]);
         setInterviewInfo({
             userName: userName,
+            userEmail: userEmail,
             interviewData: Interview[0]
         });
         router.push('/interview/' + interview_id + '/start')
@@ -83,7 +85,12 @@ function Interview() {
 
                 <div className='w-full'>
                     <h2>Enter your full name</h2>
-                    <Input placehoder='e.g. Jhon Smith' onChange={(event)=>setUserName(event.target.value)} />
+                    <Input placehoder='e.g. Jhon Smith' onChange={(event) => setUserName(event.target.value)} />
+                </div>
+
+                <div className='w-full'>
+                    <h2>Enter your Email</h2>
+                    <Input placehoder='e.g. jhon@gmail.com' onChange={(event) => setUserEmail(event.target.value)} />
                 </div>
 
                 <div className='p-3 bg-blue-100 flex gap-4 rounded-lg mt-6'> 
