@@ -31,7 +31,9 @@ function InterviewCard({ interview, viewDetail = false }) {
                 <Button className={'w-full'} onClick={onSend}> <Send /> Send </Button>
             </div>
                 :
-                <Button className="mt-5 w-full" variant="outline"> View Detail <ArrowRight /> </Button>
+                <Link href={'/scheduled-interview/' + interview?.interview_id + "/details"}>
+                    <Button className="mt-5 w-full" variant="outline"> View Detail <ArrowRight /> </Button>
+                </Link>
             }
         </div>
     )
