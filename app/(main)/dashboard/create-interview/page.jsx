@@ -2,7 +2,7 @@
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { use, useState } from 'react'
 import FormContainer from './_components/FormContainer';
 import QuestionList from './_components/QuestionList';
 import { toast } from 'sonner';
@@ -13,6 +13,7 @@ function CreateInterview() {
     const [step, setStep] = useState(1);
     const [formData,setFormData] = useState();
     const [interviewId, setInterviewId] = useState();
+    const { user } = useUser();
     const onHandleInputChange=( field, value) => {
         setFormData(prev=>({
             ...prev,
@@ -23,6 +24,12 @@ function CreateInterview() {
     }
 
     const onGoToNext = () => {
+        if (user?.credits <= 0)
+        {
+            toast('Please purchase credits to continue!')
+            return;
+        }
+
         if (!formData?.jobPosition || !formData?.jobDescription || !formData?.duration || !formData.type) {
             toast('Please enter all details!')
             return;
