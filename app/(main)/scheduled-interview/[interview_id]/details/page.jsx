@@ -4,7 +4,7 @@ import { supabase } from '@/services/supabaseClient';
 import { useParams } from 'next/navigation'
 import React from 'react'
 import InterviewDetailContainer from './_components/InterviewDetailContainer';
-import Candidatelist from './_components/Candidatelist';
+import Candidatelist from './_components/CandidateList';
 
 function InterviewDetail() {
     const { interview_id } = useParams();
