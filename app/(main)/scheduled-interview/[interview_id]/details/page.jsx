@@ -2,9 +2,9 @@
 import { useUser } from '@/app/provider';
 import { supabase } from '@/services/supabaseClient';
 import { useParams } from 'next/navigation'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import InterviewDetailContainer from './_components/InterviewDetailContainer';
-import Candidatelist from './_components/CandidateList';
+import CandidateList from './_components/CandidateList';
 
 function InterviewDetail() {
     const { interview_id } = useParams();
@@ -17,21 +17,19 @@ function InterviewDetail() {
 
     const GetInterviewDetail = async () => {
         const result = await supabase.from('Interviews')
-                .select(`jobPosition, jobDescription, type, questionList, duration, interview_id, created_at,
-                    interview-feedback(userEmail, userName, feedback, created_at)`)
-                .eq('userEmail', user?.email)
-                .eq('interview_id', interview_id)
-                
-            setInterviewDetail(result?.data[0])
-            console.log(result);
-                
+            .select(`jobPosition,jobDescription,type,questionList,duration,interview_id,created_at,
+                interview-feedback(userEmail,userName,feedback,created_at)`)
+            .eq('userEmail', user?.email)
+            .eq('interview_id', interview_id)
+        setInterviewDetail(result?.data[0])
+        console.log(result);
     }
 
     return (
         <div className='mt-5'>
-            <h2 className='font-bold text-2xl'>Interview Detail</h2>
+            <h2 className='font-bold text-2xl'>Detalle de la entrevista</h2>
             <InterviewDetailContainer interviewDetail={interviewDetail} />
-            <Candidatelist candidateList={interviewDetail?.['interview-feedback']} />
+            <CandidateList candidateList={interviewDetail?.['interview-feedback']} />
         </div>
     )
 }

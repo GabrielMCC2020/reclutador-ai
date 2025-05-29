@@ -1,28 +1,28 @@
-import { LayoutDashboard, Calendar, List, WalletCards, Settings, BriefcaseBusinessIcon, Puzzle, Code2Icon, User2Icon, Component } from "lucide-react";
+import { BriefcaseBusinessIcon, Calendar, Code2Icon, Component, LayoutDashboard, List, Puzzle, Settings, User2Icon, WalletCards } from "lucide-react";
 
 export const SideBarOptions=[
     {
-        name: 'Dashboard',
+        name: 'Panel',
         icon: LayoutDashboard,
         path: '/dashboard'
     },
     {
-        name: 'Scheduled Interview',
+        name: 'Entrevista programada',
         icon: Calendar,
         path: '/scheduled-interview'
     },
     {
-        name: 'All Interview',
+        name: 'Toda las entrevistas',
         icon: List,
         path: '/all-interview'
     },
     {
-        name: 'Billing',
+        name: 'Facturación',
         icon: WalletCards,
         path: '/billing'
     },
     {
-        name: 'Settings',
+        name: 'Ajustes',
         icon: Settings,
         path: '/settings'
     },
@@ -30,76 +30,81 @@ export const SideBarOptions=[
 
 export const InterviewType = [
     {
-        title: 'Technical',
+        title: 'Técnico',
         icon: Code2Icon
     },
     {
-        title: 'Behavioral',
+        title: 'Conductual',
         icon: User2Icon
     },
     {
-        title: 'Experience',
+        title: 'Experiencia',
         icon: BriefcaseBusinessIcon
     },
     {
-        title: 'Problem Solving',
+        title: 'Resolución de problemas',
         icon: Puzzle
     },
     {
-        title: 'Leadership',
+        title: 'Liderazgo',
         icon: Component
     }
 ]
 
-export const QUESTIONS_PROMPT = `You are an expert technical interviewer.
-Based on the following inputs, generate a well-structured list of high-quality interview questions:
+export const QUESTIONS_PROMPT = `Eres un entrevistador técnico experto.
+Con base en las siguientes entradas, genere una lista bien estructurada de preguntas de entrevista de alta calidad:
 
-Job Title: {{jobTitle}}
+Título de trabajo: {{jobTitle}}
 
-Job Description: {{jobDescription}}
+Descripción del trabajo: {{jobDescription}}
 
-Interview Duration: {{duration}}
+Duración de la entrevista: {{duration}}
 
-Interview Type: {{type}}
+Tipo de entrevista: {{type}}
 
-📝 Your task:
+📝 Tu tarea:
 
-Analyze the job description to identify key responsabilities, required skills, and expected experience.
+Analice la descripción del puesto para identificar las responsabilidades clave, las habilidades requeridas y la experiencia esperada.
 
-Generate a list of interview questions depends on interview duration.
+Genere una lista de preguntas de entrevista según la duración de la misma.
 
-Adjust the number and depth of questions to match the interview duration.
+Adapte el número y la profundidad de las preguntas a la duración de la entrevista.
 
-Ensure the questions match the tone and structure of a real-life {{type}} interview.
+Asegúrese de que sus preguntas coincidan con el tono y la estructura de una entrevista de la vida real de {{type}}.
 
-🧩 Format your response in JSON format with array list of questions.
+🧩 Formatee su respuesta en formato JSON con una lista de preguntas.
 format: interviewQuestions=[
 {
     question:'',
-    type:'Technical/Behavioral/Experience/Problem Solving/Leadership',
+    type:'Técnico/Conductual/Experiencia/Resolución de problemas/Liderazgo'
 },{
 ...
 }]
 
-🎯 The goal is to create a structured, relevant, and time-optimized interview plan for a {{jobTitle}} role.`
+🎯 El objetivo es crear un plan de entrevistas estructurado, relevante y optimizado en el tiempo para un puesto de {{jobTitle}}.`
 
-export const FEEDBACK_PROMPT =` {{conversation}}
-Depends on this Interview Conversation between assistant and user,
-Give me feedback for user interview. Give me rating out of 10 for technical Skills,
-Communication, Problen Solving, Experience. Also give me summary in 3 lines
-about the interview and one line to let me know whether is recommended
-for hire or not with msg. Give me response in JSON format
+export const FEEDBACK_PROMPT = `{{conversation}}
+Depende de la conversación de la entrevista entre el asistente y el usuario.
+Denme su opinión sobre la entrevista. 
+Califiquen del 1 al 10 en habilidades técnicas, comunicación, resolución de problemas y experiencia. 
+También envíenme un resumen de tres líneas sobre la entrevista y una línea para indicar si se recomienda contratarlo o no, con un mensaje. 
+Envíenme la respuesta en formato JSON
 {
-    feedback: {
-        rating: {
-            technicalSkills: 5,
-            communication: 6,
-            problemSolving: 4,
-            experience: 7
+    feedback:{
+        rating:{
+            technicalSkills:<>,
+            communication:<>,
+            problemSolving:<>,
+            experince:<>,
+            totalRating:<>
         },
-        summary:<in 3 Line>,
-        Recommendation:'',
-        RecommendationMsg:'' 
+        summery:<en 3 líneas>,
+        recommendation:true|false, //verdadero significa SÍ y falso significa NO
+        recommendationMsg:<'mensaje de una línea'>
     }
 }
+
 `
+
+
+
