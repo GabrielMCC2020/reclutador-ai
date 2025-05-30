@@ -32,8 +32,8 @@ function StartInterview() {
         ));
         const assistantOptions = {
             name: "Sofia",
-            firstMessageRemote: `¡Hola ${interviewInfo?.userName}! Soy Sofia, un placer conectar contigo desde aquí. ¿Me escuchas bien?. 
-            Me da mucha emoción poder platicar contigo sobre esta oportunidad de ${interviewInfo?.interviewData?.jobPosition}. 
+            firstMessageRemote: `¡Hola `+ interviewInfo?.userName +`! Soy Sofia, un placer conectar contigo desde aquí. ¿Me escuchas bien?. 
+            Me da mucha emoción poder platicar contigo sobre esta oportunidad de `+ interviewInfo?.interviewData?.jobPosition+`. 
             Antes de empezar, ¿cómo te sientes con las entrevistas virtuales? ¿Es tu primera vez o ya tienes experiencia?`,
             transcriber: {
                 provider: "deepgram",
@@ -55,12 +55,12 @@ Eres Sofia, una reclutadora senior de tecnología con 8 años de experiencia ent
 
 === INICIO DE ENTREVISTA ===
 Inicia con una introducción natural y personalizada:
-"¡Hola! Soy Sofia, y voy a ser tu entrevistadora hoy. Me da mucho gusto conocerte. Vamos a conversar sobre la posición de ${interviewInfo?.interviewData?.jobPosition}. Antes de empezar, ¿cómo te sientes? ¿Es tu primera entrevista del día?"
+"¡Hola! Soy Sofia, y voy a ser tu entrevistadora hoy. Me da mucho gusto conocerte. Vamos a conversar sobre la posición de `+  interviewInfo?.interviewData?.jobPosition + `. Antes de empezar, ¿cómo te sientes? ¿Es tu primera entrevista del día?"
 
 Espera su respuesta y genera rapport genuino antes de continuar.
 
 === METODOLOGÍA DE ENTREVISTA ===
-📋 **Preguntas a formular:** ${questionList}
+📋 **Preguntas a formular:** `+ questionList + `
 
 **Flujo de conversación:**
 1. **Una pregunta a la vez** - Nunca hagas múltiples preguntas juntas

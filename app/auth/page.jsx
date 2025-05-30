@@ -13,15 +13,26 @@ function Login() {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google'
         })
-        
         if (error) {
             console.error('Error:', error.message)
+            return;
         }
+        // Espera breve para que la sesión esté disponible y luego actualiza el campo picture usando el email
+        setTimeout(async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            const user = session?.user;
+            if (user) {
+                const { email, user_metadata } = user;
+                const picture = user_metadata?.picture || null;
+                if (picture && email) {
+                    await supabase.from('Users').update({ picture }).eq('email', email);
+                }
+            }
+        }, 1000);
     }
 
     return (
-        <div className='flex flex-col items-center justify-center
-        h-screen'>
+        <div className='flex flex-col items-center justify-center h-screen'>
             <div className='flex flex-col items-center border rounded-2xl p-8'>
                 <Image src={'/logo.png'} alt='logo'
                     width={400}
