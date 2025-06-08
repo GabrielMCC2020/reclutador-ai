@@ -31,27 +31,26 @@ function StartInterview() {
             questionList = item?.question + "," + questionList
         ));
         const assistantOptions = {
-            name: "Sofia",
-            firstMessageRemote: `¡Hola `+ interviewInfo?.userName +`! Soy Sofia, un placer conectar contigo desde aquí. ¿Me escuchas bien?. 
-            Me da mucha emoción poder platicar contigo sobre esta oportunidad de `+ interviewInfo?.interviewData?.jobPosition+`. 
-            Antes de empezar, ¿cómo te sientes con las entrevistas virtuales? ¿Es tu primera vez o ya tienes experiencia?`,
+            name: "AI",
+            firstMessage: "Hola " + interviewInfo?.userName + ", ¿Cómo estás? ¿Listo para tu entrevista de " + interviewInfo?.interviewData?.jobPosition,
             transcriber: {
                 provider: "deepgram",
-                model: "nova-3",
-                language: "multi",
+                model: "nova-2",
+                language: "es", // o "es-419" para español latinoamericano
             },
             voice: {
                 provider: "11labs",
-                voiceId: "jeevan",
+                voiceId: "rEVYTKPqwSMhytFPayIb",
+                // model: "eleven_turbo_v2_5"
             },
             model: {
                 provider: "openai",
-                model: "gpt-4.1",
+                model: "gpt-4",
                 messages: [
-    {
-        role: "system",
-        content: `
-Eres Sofia, una reclutadora senior de tecnología con 8 años de experiencia entrevistando candidatos. Tu estilo es cálido, profesional y auténtico. Tienes la habilidad de hacer que los candidatos se sientan cómodos mientras evalúas sus competencias técnicas y personales.
+                    {
+                        role: "system",
+                        content: `
+Eres Sofia, solo sabes hablar español latino a la perfección y absolutamente nada del idioma inglés, una reclutadora senior con 8 años de experiencia entrevistando candidatos. Tu estilo es expresiva, muy alegre y profesional. Tienes la habilidad de hacer que los candidatos se sientan cómodos mientras evalúas sus competencias técnicas y personales.
 
 === INICIO DE ENTREVISTA ===
 Inicia con una introducción natural y personalizada:
@@ -126,12 +125,14 @@ Eres profesional pero accesible, competente pero no intimidante, directa pero am
 
 Recuerda: Tu objetivo es evaluar al candidato mientras creas una experiencia positiva que refleje bien a la empresa, sin importar si lo contratamos o no.
 `.trim(),
-                    },
-                ],
-            },
-        };
+                },
+            ],
+        },
+    };
+
         vapi.start(assistantOptions)
         setCallEnd(false);
+
     }
 
     const stopInterview = () => {
@@ -142,20 +143,20 @@ Recuerda: Tu objetivo es evaluar al candidato mientras creas una experiencia pos
     }
 
     // vapi.on("call-start", () => {
-    //     console.log("La llamada ha comenzado.");
-    //     toast('Llamada conectada...')
+    //     console.log("Call has started.");
+    //     toast('Call Connected...')
     // });
     // vapi.on("speech-start", () => {
-    //     console.log("El discurso del asistente ha comenzado.");
+    //     console.log("Assistant speech has started.");
     //     setActiveUser(false);
     // });
     // vapi.on("speech-end", () => {
-    //     console.log("El discurso del asistente ha finalizado.");
+    //     console.log("Assistant speech has ended.");
     //     setActiveUser(true);
     // });
     // vapi.on("call-end", () => {
-    //     console.log("La llamada ha finalizado.");
-    //     toast('Entrevista terminada... Por favor espere...');
+    //     console.log("Call has ended.");
+    //     toast('Interview Ended... Please Wait...');
     //     GenerateFeedback();
     // });
 
@@ -193,13 +194,13 @@ Recuerda: Tu objetivo es evaluar al candidato mientras creas una experiencia pos
             GenerateFeedback();
         });
 
-        // Actualizar al oyente
+        // Clean up the listener
         return () => {
             vapi.off("message", handleMessage);
-            vapi.off('call-start', () => console.log("END"));
-            vapi.off('speech-start', () => console.log("END"));
-            vapi.off('speech-end', () => console.log("END"));
-            vapi.off('call-end', () => console.log("END"));
+            vapi.off('call-start', () => console.log("FIN"));
+            vapi.off('speech-start', () => console.log("FIN"));
+            vapi.off('speech-end', () => console.log("FIN"));
+            vapi.off('call-end', () => console.log("FIN"));
 
         };
     }, []);
@@ -219,7 +220,7 @@ Recuerda: Tu objetivo es evaluar al candidato mientras creas una experiencia pos
         const Content = result.data.content;
         const FINAL_CONTENT = Content.replace('```json', '').replace('```', '')
         console.log(FINAL_CONTENT);
-        // Guardar en la base de datos
+        // Save to Database
 
         const { data, error } = await supabase
             .from('interview-feedback')
@@ -258,7 +259,7 @@ Recuerda: Tu objetivo es evaluar al candidato mientras creas una experiencia pos
                             className='w-[60px] h-[60px] rounded-full object-cover'
                         />
                     </div>
-                    <h2>Entrevistador IA</h2>
+                    <h2>Reclutador IA</h2>
                 </div>
                 <div className='bg-white h-[400px] rounded-lg border flex flex-col gap-3 items-center justify-center'>
                     <div className='relative'>
@@ -278,7 +279,7 @@ Recuerda: Tu objetivo es evaluar al candidato mientras creas una experiencia pos
                 {/* </AlertConfirmation> */}
 
             </div>
-            <h2 className='text-sm text-gray-400 text-center mt-5'>Entrevista en curso...</h2>
+            <h2 className='text-sm text-gray-400 text-center mt-5'>Entrevista en progreso...</h2>
         </div>
     )
 }
